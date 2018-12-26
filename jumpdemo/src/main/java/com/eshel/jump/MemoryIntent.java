@@ -1,6 +1,5 @@
 package com.eshel.jump;
 
-import android.app.Activity;
 import android.support.v4.util.ArrayMap;
 
 import java.util.Map;

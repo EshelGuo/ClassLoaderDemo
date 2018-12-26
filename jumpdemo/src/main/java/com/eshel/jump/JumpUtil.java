@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.eshel.jump.anno.IntentParser;
 import com.eshel.jump.anno.Params;
-import com.eshel.jumpdemo.DemoAct;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
