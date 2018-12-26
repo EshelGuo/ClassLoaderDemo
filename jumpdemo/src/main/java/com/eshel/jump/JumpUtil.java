@@ -51,6 +51,20 @@ public class JumpUtil {
         parseIntent(id, target, intent, false);
     }
 
+    /**
+     * @IntentParser(intentType = IntentType.MemoryIntent, id = 2)
+     * @param id id为 @IntentParser 中的id
+     * @param target 即 @IntentParser 注解的方法所在类
+     * @param intent 如果使用 Intent 则需要 activity.getIntent(), 如果使用 MemoryIntent 则该字段不被使用, 即可传任意值
+     * @param needRecycle 如果使用MemoryIntent该参数有效(使用Intent可以忽略该参数) , 即解析完MemoryIntent后是否回收MemoryIntent, 如果被回收则无法进行二次解析
+     *                    例如:
+     *                          parseIntent(1, this, null, true);//第一次被回收
+     *                          parseIntent(1, this, null, true);//此次解析不到MemoryIntent, 因为他已经被回收释放.
+     *                    正确写法:
+     *                          parseIntent(1, this, null, false);//第一次不回收
+     *                          parseIntent(1, this, null, true);//第二次用完回收 MemoryIntent.
+     *
+     */
     public static void parseIntent(int id, Object target, @NonNull Intent intent, boolean needRecycle){
         checkNull(target);
         Class<?> clazz = target.getClass();
