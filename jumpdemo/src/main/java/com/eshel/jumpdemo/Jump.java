@@ -7,6 +7,12 @@ import com.eshel.jump.anno.Intent;
 import com.eshel.jump.anno.Params;
 
 public interface Jump {
+    @Intent(target = DemoAct.class, intentType = IntentType.MemoryIntent)
+    void jumpDemoAct(Context context, @Params("Int") int pInt, @Params("Float") float pFloat, @Params("String") String pString);
+
+    @Intent(target = DemoAct.class, intentType = IntentType.MemoryIntent)
+    void jumpDemoActForBean(Context context, @Params("Float") float pFloat, @Params("Bean") Bean bean);
+
     @Intent(target = DemoAct.class, intentType = IntentType.Intent)
-    void jumpDemoAct(Context context, @Params(key = "Int") int pInt, @Params(key = "Float") float pFloat, @Params(key = "String") String pString);
+    void jumpDemoActForBeanS(Context context, @Params("Float") float pFloat, @Params("BeanS") BeanS bean);
 }

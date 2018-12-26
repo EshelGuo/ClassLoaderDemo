@@ -12,5 +12,5 @@ public @interface Params {
     /**
      * Intent 传参参数名
      */
-    String key();
+    String value();
 }

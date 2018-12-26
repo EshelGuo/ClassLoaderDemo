@@ -9,28 +9,28 @@ import java.util.Map;
  * Intent 的替代品, 参数将存储在内存
  */
 public class MemoryIntent {
-    private static Map<Class<? extends Activity>, MemoryIntent> intents;
+    private static Map<Class, MemoryIntent> intents;
     static {
         intents = new ArrayMap<>();
     }
     public MemoryIntent(){
         mDatas = new ArrayMap<>();
     }
-    public static MemoryIntent getIntent(Class<? extends Activity> key){
+    public static MemoryIntent getIntent(Class key){
         return intents.get(key);
     }
 
-    public static synchronized void sendIntent(Class<? extends Activity> key, MemoryIntent intent){
+    public static synchronized void sendIntent(Class key, MemoryIntent intent){
         intents.put(key, intent);
     }
 
-    public static void recycleIntent(Class<? extends Activity> clazz){
+    public static void recycleIntent(Class clazz){
         intents.remove(clazz);
     }
 
     public static void recycleIntent(MemoryIntent intent){
         Class key = null;
-        for (Map.Entry<Class<? extends Activity>, MemoryIntent> entry : intents.entrySet()) {
+        for (Map.Entry<Class, MemoryIntent> entry : intents.entrySet()) {
             if(entry.getValue() == intent)
                 key = entry.getKey();
         }

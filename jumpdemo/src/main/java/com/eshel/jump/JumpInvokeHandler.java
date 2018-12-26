@@ -56,7 +56,7 @@ public class JumpInvokeHandler implements InvocationHandler {
 
             String key;
             if(annotation != null){
-                key = annotation.key();
+                key = annotation.value();
             }else {
                 throw new JumpException(JumpException.JumpExpType.NoneParamsKey, proxy, method);
             }

@@ -3,8 +3,6 @@ package com.eshel.jumpdemo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.eshel.jump.IntentType;
@@ -23,12 +21,37 @@ public class DemoAct extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
         mTextView = findViewById(R.id.textView2);
-        JumpUtil.parseIntent(this, getIntent());
+
+        float flag = JumpUtil.getFlagFloat(this, getIntent(), "Float");
+        if(flag == 0){
+            JumpUtil.parseIntent(0, this, getIntent(), true);
+        }else if(flag == 1){
+            JumpUtil.parseIntent(1, this, getIntent(), true);
+        }else{
+            JumpUtil.parseIntent(2, this, getIntent(), true);
+        }
+//        JumpUtil.parseMemoryIntent(this/*, getIntent()*/);
     }
 
-    @IntentParser(intentType = IntentType.Intent)
-    public void parseIntent(@Params(key = "Int") int pInt, @Params(key = "Float") float pFloat, @Params(key = "String") String pString){
+    @IntentParser(intentType = IntentType.MemoryIntent, id = 2)
+    public void parseIntent(@Params("Int") int pInt, @Params("Float") float pFloat, @Params("String") String pString){
         mTextView.setText(String.format(Locale.getDefault(),
                 "parseIntent() called with: pInt = [%d], pFloat = [%s], pString = [%s]", pInt, pFloat, pString));
+    }
+
+    @IntentParser(intentType = IntentType.MemoryIntent, id = 0)
+    public void parseIntent(@Params("Float") float pFloat, @Params("Bean") Bean bean){
+        if(bean == null)
+            return;
+        mTextView.setText(String.format(Locale.getDefault(),
+                "parseIntent() called with: pFloat = [%s], bean = [%s]", pFloat, bean.toString()));
+    }
+
+    @IntentParser(intentType = IntentType.Intent, id = 1)
+    public void parseIntent(@Params("Float") float pFloat, @Params("BeanS") BeanS bean){
+        if(bean == null)
+            return;
+        mTextView.setText(String.format(Locale.getDefault(),
+                "parseIntent() called with: pFloat = [%s], BeanS = [%s]", pFloat, bean.toString()));
     }
 }

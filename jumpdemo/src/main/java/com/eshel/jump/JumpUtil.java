@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.eshel.jump.anno.IntentParser;
 import com.eshel.jump.anno.Params;
+import com.eshel.jumpdemo.DemoAct;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -27,6 +28,13 @@ public class JumpUtil {
         parseIntent(0, target, intent);
     }
 
+    public static void parseMemoryIntent(Object target){
+        parseMemoryIntent(0, target);
+    }
+    public static void parseMemoryIntent(int id, Object target){
+        parseIntent(id, target, null);
+    }
+
     /**
      * 解析 MemoryIntent 并将其移除
      * @param target Activity, 即使用了 @IntentParser 注解的类
@@ -43,7 +51,7 @@ public class JumpUtil {
         parseIntent(id, target, intent, false);
     }
 
-    private static void parseIntent(int id, Object target, @NonNull Intent intent, boolean needRecycle){
+    public static void parseIntent(int id, Object target, @NonNull Intent intent, boolean needRecycle){
         checkNull(target);
         Class<?> clazz = target.getClass();
         Method[] methods = clazz.getDeclaredMethods();
@@ -100,12 +108,12 @@ public class JumpUtil {
                     return;
                 }
 
-                param = intent.getSerializableExtra(anno.key());
+                param = intent.getSerializableExtra(anno.value());
             }else if(targetAnno.intentType() == IntentType.MemoryIntent){
                 if(intentM == null)
                     intentM = MemoryIntent.getIntent((Class<? extends Activity>) target.getClass());
 
-                param = intentM.load(anno.key(), Object.class);
+                param = intentM.load(anno.value(), Object.class);
             }
             params[i] = param;
         }
@@ -153,5 +161,58 @@ public class JumpUtil {
 
     private static boolean isNull(Object obj){
         return obj == null;
+    }
+
+    private static final int INT = 0;
+    private static final int FLOAT = 1;
+    private static final int STRING = 2;
+    // type: 0 int, 1 float ,2 String
+    private static Object getFlag(Object target, Intent intent, String key, int type){
+        Object flag = null;
+        if(intent != null) {
+            switch (type){
+                case INT:
+                    flag = intent.getIntExtra(key, 0);
+                    break;
+                case FLOAT:
+                    flag = intent.getFloatExtra(key, 0);
+                    break;
+                case STRING:
+                    flag = intent.getStringExtra(key);
+                    break;
+            }
+
+            if((flag instanceof Integer || int.class.isInstance(flag)) && (int)flag != 0){
+                return flag;
+            }else if((flag instanceof Float || float.class.isInstance(flag)) && (float)flag != 0){
+                return flag;
+            }else if(flag instanceof String)
+                return flag;
+        }
+        MemoryIntent memoryIntent = MemoryIntent.getIntent(target.getClass());
+        if(memoryIntent != null)
+            flag = memoryIntent.load(key, Object.class);
+        return flag;
+    }
+
+    public static float getFlagFloat(Object target, Intent intent, String key) {
+        Object flag = getFlag(target, intent, key, FLOAT);
+        if(flag instanceof Float || float.class.isInstance(flag))
+            return (float) flag;
+        return 0;
+    }
+
+    public static int getFlagInt(Object target, Intent intent, String key) {
+        Object flag = getFlag(target, intent, key, INT);
+        if(flag instanceof Integer|| int.class.isInstance(flag))
+            return (int) flag;
+        return 0;
+    }
+
+    public static String getFlagString(Object target, Intent intent, String key) {
+        Object flag = getFlag(target, intent, key, STRING);
+        if(flag instanceof String)
+            return (String) flag;
+        return null;
     }
 }
